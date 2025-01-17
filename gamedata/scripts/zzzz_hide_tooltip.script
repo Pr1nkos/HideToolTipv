@@ -1,0 +1,117 @@
+local hide_mode = false -- Флаг для скрытия/показа подсказки
+local KEY_HIDE = nil -- Клавиша для скрытия/показа подсказки (будет установлена через MCM)
+local MODIFIER = nil -- Клавиша-модификатор (например, Left Control)
+local non_mod_update = utils_ui.UIInfoItem.Update -- Сохраняем оригинальный метод Update
+local holding_key_hide = false -- Флаг удержания клавиши скрытия
+local mode_toggle = false -- Флаг режима (false - первый режим, true - второй режим)
+local displace_tooltip = nil
+
+-- Переопределение метода OnKeyboard
+local original_OnKeyboard = ui_inventory.UIInventory.OnKeyboard
+
+function ui_inventory.UIInventory:OnKeyboard(dik, keyboard_action)
+	-- Вызов оригинального метода
+	local res = original_OnKeyboard(self, dik, keyboard_action)
+
+	-- Обработка нажатия клавиши для переключения режима
+	if keyboard_action == ui_events.WINDOW_KEY_PRESSED then
+		if dik == MODIFIER then
+			-- Переключение режима при нажатии модификатора
+			mode_toggle = not mode_toggle
+			printf(
+				"Режим переключен: "
+					.. (mode_toggle and "второй режим" or "первый режим")
+			)
+		elseif dik == KEY_HIDE then
+			holding_key_hide = true
+			update_tooltip_visibility()
+		end
+	elseif keyboard_action == ui_events.WINDOW_KEY_RELEASED then
+		if dik == KEY_HIDE then
+			holding_key_hide = false
+			update_tooltip_visibility()
+		end
+	end
+
+	return res
+end
+
+-- Переопределение метода Update
+function utils_ui.UIInfoItem:Update(obj, sec, flags)
+	-- Вызов оригинального метода
+	non_mod_update(self, obj, sec, flags)
+
+	-- Логика скрытия/показа подсказки
+	if hide_mode then
+		self.dialog:Show(false)
+		return
+	end
+
+	-- Остальная логика
+	if not self:Pass(obj, sec) then
+		self:Show(false)
+		return
+	end
+
+	-- Позиционирование подсказки
+	local cursor_position = GetCursorPosition()
+	local tooltip_position
+	if displace_tooltip then
+		tooltip_position = vector2():set(0, 0)
+		-- Проверка, находится ли курсор внутри подсказки
+	else
+		tooltip_position = vector2():set(cursor_position.x, cursor_position.y)
+	end
+
+	local w = self.frame:GetWidth() or self.dialog:GetWidth()
+	local h = self.frame:GetHeight() or self.dialog:GetHeight()
+
+	local is_cursor_inside_tooltip = (
+		cursor_position.x >= tooltip_position.x
+		and cursor_position.x <= tooltip_position.x + w
+		and cursor_position.y >= tooltip_position.y
+		and cursor_position.y <= tooltip_position.y + h
+	)
+
+	if displace_tooltip and is_cursor_inside_tooltip then
+		tooltip_position:set(1024 - w, 0) -- Правый верхний угол экрана
+	else
+		if 1024 - tooltip_position.x < w then
+			tooltip_position.x = tooltip_position.x - w
+		end
+		if 768 - tooltip_position.y < h then
+			local y = tooltip_position.y - h
+			tooltip_position.y = y < 0 and 0 or y
+		end
+	end
+	self.dialog:SetWndPos(tooltip_position)
+end
+
+-- Функция для обновления видимости подсказки
+function update_tooltip_visibility()
+	if mode_toggle then
+		-- Второй режим: информация скрыта, пока клавиша зажата
+		hide_mode = holding_key_hide
+	else
+		-- Первый режим: информация отображается, пока клавиша зажата
+		hide_mode = not holding_key_hide
+	end
+	printf("Подсказка: " .. (hide_mode and "скрыта" or "показана"))
+end
+
+-- Функция для обновления настроек из MCM
+function on_option_change()
+	KEY_HIDE = ui_mcm.get("hide_tooltip/key_hide") -- Получаем клавишу из MCM
+	MODIFIER = ui_mcm.get("hide_tooltip/KEY_MODIFIER")
+	displace_tooltip = ui_mcm.get("hide_tooltip/enable_displace_tooltip")
+end
+
+-- Инициализация скрипта при старте игры
+function on_game_start()
+	RegisterScriptCallback("on_key_press", on_key_press)
+	RegisterScriptCallback("on_key_release", on_key_release)
+	if ui_mcm then
+		RegisterScriptCallback("on_option_change", on_option_change)
+		on_option_change()
+	end
+end

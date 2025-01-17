@@ -1,0 +1,45 @@
+defaults = {
+	key_hide = DIK_keys.DIK_P, -- Клавиша по умолчанию: P
+	modifier = DIK_keys.DIK_LSHIFT,
+}
+
+function get_config(key)
+	if ui_mcm then
+		return ui_mcm.get("hide_tooltip/" .. key)
+	else
+		return defaults[key]
+	end
+end
+
+-- Функция для загрузки настроек в MCM
+function on_mcm_load()
+	local op = {
+		id = "hide_tooltip",
+		sh = true,
+		gr = {
+			{
+				id = "title",
+				type = "slide",
+				link = "ui_options_slider_player",
+				text = "ui_mcm_menu_hide_tooltip",
+				size = { 512, 50 },
+				spacing = 20,
+			},
+			{ id = "key_hide", type = "key_bind", val = 2, def = defaults.key_hide }, -- Настройка клавиши
+			{
+				id = "KEY_MODIFIER",
+				type = "radio_h",
+				val = 2,
+				def = defaults.modifier,
+				content = {
+					{ DIK_keys.DIK_LSHIFT, "hide_tooltip_KEY_MODIFIER_shift" },
+					{ DIK_keys.DIK_LCONTROL, "hide_tooltip_KEY_MODIFIER_ctrl" },
+					{ DIK_keys.DIK_LMENU, "hide_tooltip_KEY_MODIFIER_alt" },
+				},
+			},
+			{ id = "divider", type = "line" },
+			{ id = "enable_displace_tooltip", type = "check", val = 1, def = true },
+		},
+	}
+	return op
+end
