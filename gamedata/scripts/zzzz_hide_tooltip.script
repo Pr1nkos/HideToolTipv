@@ -45,8 +45,22 @@ local original_methods = {
 		WorkshopRepair = ui_workshop.UIWorkshopRepair.OnKeyboard,
 		WorkshopCraft = ui_workshop.UIWorkshopCraft.OnKeyboard,
 		WorkshopUpgrade = ui_workshop.UIWorkshopUpgrade.OnKeyboard,
+		MutantLoot = nil,
+		Cook = item_cooking.UICook.OnKeyboard,
+		Recipe = item_recipe.UIRecipe.OnKeyboard,
 	},
 }
+
+local function initialize_mutant_loot_method()
+	local status, result = pcall(function()
+		return ish_ui_mutant_loot.Ishy_OnKeyboard
+	end)
+	if status and type(result) == "function" then
+		original_methods.OnKeyboard.MutantLoot = ish_ui_mutant_loot.Ishy_OnKeyboard
+	else
+		original_methods.OnKeyboard.MutantLoot = ui_mutant_loot.UIMutantLoot.OnKeyboard
+	end
+end
 
 --[[
 	Toggles the hide mode state.
@@ -108,6 +122,81 @@ function ui_workshop.UIWorkshopUpgrade:OnKeyboard(dik, keyboard_action)
 	local res = original_methods.OnKeyboard.WorkshopUpgrade(self, dik, keyboard_action)
 	handle_keyboard_input(dik, keyboard_action)
 	return res
+end
+
+function ui_mutant_loot.UIMutantLoot:OnKeyboard(dik, keyboard_action)
+	handle_keyboard_input(dik, keyboard_action)
+
+	if keyboard_action == KEY_PRESSED and dik == KEY_HIDE and holding_key_mod then
+		return true
+	end
+
+	if hide_mode then
+		return true
+	end
+
+	if keyboard_action == KEY_PRESSED and dik == DIK_keys.DIK_RETURN then
+		self:OnButton_LootAll()
+		return true
+	end
+
+	if keyboard_action == KEY_PRESSED and dik == DIK_keys.DIK_ESCAPE then
+		self:Close()
+		return true
+	end
+
+	return false
+end
+
+function ish_ui_mutant_loot.Ishy_OnKeyboard(sender, dik, keyboard_action)
+	handle_keyboard_input(dik, keyboard_action)
+
+	if keyboard_action == KEY_PRESSED and dik == KEY_HIDE and holding_key_mod then
+		return true
+	end
+
+	if hide_mode then
+		return true
+	end
+
+	if keyboard_action == KEY_PRESSED and dik == DIK_keys.DIK_RETURN then
+		sender:OnButton_LootAll()
+		return true
+	end
+
+	if keyboard_action == KEY_PRESSED and dik == DIK_keys.DIK_ESCAPE then
+		sender:Close()
+		return true
+	end
+
+	return false
+end
+
+function item_cooking.UICook:OnKeyboard(dik, keyboard_action)
+	local res = original_methods.OnKeyboard.Cook(self, dik, keyboard_action)
+	handle_keyboard_input(dik, keyboard_action)
+	return res
+end
+
+function item_recipe.UIRecipe:OnKeyboard(dik, keyboard_action)
+	handle_keyboard_input(dik, keyboard_action)
+
+	if keyboard_action == KEY_PRESSED and dik == KEY_HIDE and holding_key_mod then
+		return true
+	end
+
+	if keyboard_action == KEY_PRESSED and dik == DIK_keys.DIK_ESCAPE then
+		printf("Closing window: Escape key pressed")
+		self:Close()
+		return true
+	end
+
+	if hide_mode then
+		printf("Preventing window close: hide_mode is active")
+		return true
+	end
+
+	return false
 end
 
 --[[
@@ -184,6 +273,7 @@ end
 	Called when the game starts.
 ]]
 function on_game_start()
+	initialize_mutant_loot_method()
 	if ui_mcm then
 		RegisterScriptCallback("on_option_change", on_option_change)
 		on_option_change()
