@@ -1,6 +1,8 @@
 defaults = {
-	key_hide = DIK_keys.DIK_P, -- Клавиша по умолчанию: P
+	key_hide = DIK_keys.DIK_P,
 	modifier = DIK_keys.DIK_LSHIFT,
+	hide_mode = false,
+	delay = 700,
 }
 
 function get_config(key)
@@ -11,7 +13,6 @@ function get_config(key)
 	end
 end
 
--- Функция для загрузки настроек в MCM
 function on_mcm_load()
 	local op = {
 		id = "hide_tooltip",
@@ -25,7 +26,7 @@ function on_mcm_load()
 				size = { 512, 50 },
 				spacing = 20,
 			},
-			{ id = "key_hide", type = "key_bind", val = 2, def = defaults.key_hide }, -- Настройка клавиши
+			{ id = "key_hide", type = "key_bind", val = 2, def = defaults.key_hide },
 			{
 				id = "KEY_MODIFIER",
 				type = "radio_h",
@@ -38,7 +39,17 @@ function on_mcm_load()
 				},
 			},
 			{ id = "divider", type = "line" },
-			{ id = "enable_displace_tooltip", type = "check", val = 1, def = true },
+			{ id = "hide_mode", type = "check", val = 1, def = false },
+			{
+				id = "delay",
+				type = "track",
+				text = "hide_tooltip_delay", -- Локализованный текст для ползунка
+				val = 2,
+				min = 0,
+				max = 2000,
+				step = 100,
+				def = defaults.delay,
+			},
 		},
 	}
 	return op

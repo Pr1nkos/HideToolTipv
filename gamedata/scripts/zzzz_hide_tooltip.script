@@ -1,115 +1,189 @@
-local hide_mode = false -- Флаг для скрытия/показа подсказки
-local KEY_HIDE = nil -- Клавиша для скрытия/показа подсказки (будет установлена через MCM)
-local MODIFIER = nil -- Клавиша-модификатор (например, Left Control)
-local non_mod_update = utils_ui.UIInfoItem.Update -- Сохраняем оригинальный метод Update
-local holding_key_hide = false -- Флаг удержания клавиши скрытия
-local mode_toggle = false -- Флаг режима (false - первый режим, true - второй режим)
-local displace_tooltip = nil
+--[[
+	This script provides functionality to toggle a "hide mode" for UI elements (e.g., tooltips) 
+	based on keyboard input. It also handles the positioning of tooltips relative to the cursor.
 
--- Переопределение метода OnKeyboard
-local original_OnKeyboard = ui_inventory.UIInventory.OnKeyboard
+	Key Features:
+	1. Toggle "hide mode" using a combination of a modifier key and a hide key.
+	2. Dynamically adjust tooltip position to ensure it stays within the screen bounds.
+	3. Integrate with a Mod Configuration Menu (MCM) for customizable key bindings and settings.
 
-function ui_inventory.UIInventory:OnKeyboard(dik, keyboard_action)
-	-- Вызов оригинального метода
-	local res = original_OnKeyboard(self, dik, keyboard_action)
+	Global Variables:
+	- hide_mode: Boolean to track whether the hide mode is active.
+	- KEY_HIDE: The key assigned to toggle hide mode.
+	- MODIFIER: The modifier key used in combination with KEY_HIDE.
+	- holding_key_hide: Boolean to track if the hide key is currently pressed.
+	- holding_key_mod: Boolean to track if the modifier key is currently pressed.
+	- delay: Optional delay for UI updates.
+	- KEY_PRESSED, KEY_RELEASED: Constants for keyboard event types.
 
-	-- Обработка нажатия клавиши для переключения режима
-	if keyboard_action == ui_events.WINDOW_KEY_PRESSED then
+	Functions:
+	- toggle_hide_mode(): Toggles the hide mode state.
+	- handle_keyboard_input(dik, keyboard_action): Handles keyboard input to manage hide mode.
+	- Overridden OnKeyboard methods for UI elements: Extend original methods to handle custom input.
+	- utils_ui.UIInfoItem:Update(): Updates UI element visibility and position based on hide mode and cursor position.
+	- on_option_change(): Updates settings from MCM.
+	- on_game_start(): Initializes the script and registers callbacks.
+]]
+
+-- Global variables
+local hide_mode = nil
+local KEY_HIDE = nil
+local MODIFIER = nil
+local holding_key_hide = false
+local holding_key_mod = false
+local delay = nil
+
+-- Constants for keyboard events
+local KEY_PRESSED = ui_events.WINDOW_KEY_PRESSED
+local KEY_RELEASED = ui_events.WINDOW_KEY_RELEASED
+
+-- Store original methods to preserve functionality
+local original_methods = {
+	Update = utils_ui.UIInfoItem.Update,
+	OnKeyboard = {
+		Inventory = ui_inventory.UIInventory.OnKeyboard,
+		WorkshopRepair = ui_workshop.UIWorkshopRepair.OnKeyboard,
+		WorkshopCraft = ui_workshop.UIWorkshopCraft.OnKeyboard,
+		WorkshopUpgrade = ui_workshop.UIWorkshopUpgrade.OnKeyboard,
+	},
+}
+
+--[[
+	Toggles the hide mode state.
+	Switches `hide_mode` between true and false, and resets key holding states.
+]]
+function toggle_hide_mode()
+	hide_mode = not hide_mode
+	holding_key_hide = false
+	holding_key_mod = false
+end
+
+--[[
+	Handles keyboard input to manage hide mode.
+	@param dik: The key code of the pressed/released key.
+	@param keyboard_action: The type of keyboard event (KEY_PRESSED or KEY_RELEASED).
+]]
+function handle_keyboard_input(dik, keyboard_action)
+	if keyboard_action == KEY_PRESSED then
 		if dik == MODIFIER then
-			-- Переключение режима при нажатии модификатора
-			mode_toggle = not mode_toggle
-			printf(
-				"Режим переключен: "
-					.. (mode_toggle and "второй режим" or "первый режим")
-			)
+			holding_key_mod = true
 		elseif dik == KEY_HIDE then
 			holding_key_hide = true
-			update_tooltip_visibility()
+			-- Toggle hide mode if both MODIFIER and KEY_HIDE are pressed
+			if holding_key_mod then
+				toggle_hide_mode()
+			end
 		end
-	elseif keyboard_action == ui_events.WINDOW_KEY_RELEASED then
+	elseif keyboard_action == KEY_RELEASED then
 		if dik == KEY_HIDE then
 			holding_key_hide = false
-			update_tooltip_visibility()
+		elseif dik == MODIFIER then
+			holding_key_mod = false
 		end
 	end
+end
 
+-- Override OnKeyboard methods for specific UI elements
+-- These methods call the original methods and then handle custom keyboard input.
+
+function ui_inventory.UIInventory:OnKeyboard(dik, keyboard_action)
+	local res = original_methods.OnKeyboard.Inventory(self, dik, keyboard_action)
+	handle_keyboard_input(dik, keyboard_action)
 	return res
 end
 
--- Переопределение метода Update
-function utils_ui.UIInfoItem:Update(obj, sec, flags)
-	-- Вызов оригинального метода
-	non_mod_update(self, obj, sec, flags)
+function ui_workshop.UIWorkshopRepair:OnKeyboard(dik, keyboard_action)
+	local res = original_methods.OnKeyboard.WorkshopRepair(self, dik, keyboard_action)
+	handle_keyboard_input(dik, keyboard_action)
+	return res
+end
 
-	-- Логика скрытия/показа подсказки
+function ui_workshop.UIWorkshopCraft:OnKeyboard(dik, keyboard_action)
+	local res = original_methods.OnKeyboard.WorkshopCraft(self, dik, keyboard_action)
+	handle_keyboard_input(dik, keyboard_action)
+	return res
+end
+
+function ui_workshop.UIWorkshopUpgrade:OnKeyboard(dik, keyboard_action)
+	local res = original_methods.OnKeyboard.WorkshopUpgrade(self, dik, keyboard_action)
+	handle_keyboard_input(dik, keyboard_action)
+	return res
+end
+
+--[[
+	Updates the UI element (e.g., tooltip) based on hide mode and cursor position.
+	@param obj: The object being updated.
+	@param sec: The time in seconds since the last update.
+	@param flags: Additional flags for the update.
+]]
+function utils_ui.UIInfoItem:Update(obj, sec, flags)
+	-- Call the original Update method
+	original_methods.Update(self, obj, sec, flags)
+
+	-- Apply delay if specified
+	self.delay = delay
+
+	-- Show or hide the dialog based on hide mode and key states
 	if hide_mode then
-		self.dialog:Show(false)
-		return
+		self.dialog:Show(holding_key_hide)
+	else
+		self.dialog:Show(not holding_key_hide)
 	end
 
-	-- Остальная логика
+	-- Exit if the object does not pass the update check
 	if not self:Pass(obj, sec) then
 		self:Show(false)
 		return
 	end
 
-	-- Позиционирование подсказки
+	-- Calculate tooltip position relative to the cursor
+	local screen_width, screen_height = 1024, 768
 	local cursor_position = GetCursorPosition()
-	local tooltip_position
-	if displace_tooltip then
-		tooltip_position = vector2():set(0, 0)
-		-- Проверка, находится ли курсор внутри подсказки
-	else
-		tooltip_position = vector2():set(cursor_position.x, cursor_position.y)
+	local tooltip_width = self.frame:GetWidth() or self.dialog.GetWidth()
+	local tooltip_height = self.frame:GetHeight() or self.dialog.GetHeight()
+	local tooltip_position = vector2():set(cursor_position.x + 20, cursor_position.y + 20)
+
+	-- Adjust tooltip position to ensure it stays within screen bounds
+	if tooltip_position.x + tooltip_width > screen_width then
+		tooltip_position.x = screen_width - tooltip_width
+		tooltip_position.y = cursor_position.y + 20
 	end
 
-	local w = self.frame:GetWidth() or self.dialog:GetWidth()
-	local h = self.frame:GetHeight() or self.dialog:GetHeight()
-
-	local is_cursor_inside_tooltip = (
-		cursor_position.x >= tooltip_position.x
-		and cursor_position.x <= tooltip_position.x + w
-		and cursor_position.y >= tooltip_position.y
-		and cursor_position.y <= tooltip_position.y + h
-	)
-
-	if displace_tooltip and is_cursor_inside_tooltip then
-		tooltip_position:set(1024 - w, 0) -- Правый верхний угол экрана
-	else
-		if 1024 - tooltip_position.x < w then
-			tooltip_position.x = tooltip_position.x - w
-		end
-		if 768 - tooltip_position.y < h then
-			local y = tooltip_position.y - h
-			tooltip_position.y = y < 0 and 0 or y
-		end
+	if tooltip_position.y + tooltip_height > screen_height then
+		tooltip_position.y = cursor_position.y - tooltip_height - 20
 	end
+
+	if tooltip_position.y < 0 then
+		tooltip_position.y = 0
+		tooltip_position.x = cursor_position.x - tooltip_width - 20
+	end
+
+	if tooltip_position.x < 0 then
+		tooltip_position.x = cursor_position.x + 20
+	end
+
+	-- Set the tooltip position
 	self.dialog:SetWndPos(tooltip_position)
 end
 
--- Функция для обновления видимости подсказки
-function update_tooltip_visibility()
-	if mode_toggle then
-		-- Второй режим: информация скрыта, пока клавиша зажата
-		hide_mode = holding_key_hide
-	else
-		-- Первый режим: информация отображается, пока клавиша зажата
-		hide_mode = not holding_key_hide
-	end
-	printf("Подсказка: " .. (hide_mode and "скрыта" or "показана"))
-end
-
--- Функция для обновления настроек из MCM
+--[[
+	Updates settings from the Mod Configuration Menu (MCM).
+	Called when options are changed in the MCM.
+]]
 function on_option_change()
-	KEY_HIDE = ui_mcm.get("hide_tooltip/key_hide") -- Получаем клавишу из MCM
-	MODIFIER = ui_mcm.get("hide_tooltip/KEY_MODIFIER")
-	displace_tooltip = ui_mcm.get("hide_tooltip/enable_displace_tooltip")
+	KEY_HIDE = ui_mcm.get("hide_tooltip/key_hide") -- Get the hide key from MCM
+	MODIFIER = ui_mcm.get("hide_tooltip/KEY_MODIFIER") -- Get the modifier key from MCM
+	hide_mode = ui_mcm.get("hide_tooltip/hide_mode") -- Get the hide mode state from MCM
+	delay = ui_mcm.get("hide_tooltip/delay") -- Get the delay setting from MCM
+	holding_key_hide = false
+	holding_key_mod = false
 end
 
--- Инициализация скрипта при старте игры
+--[[
+	Initializes the script and registers callbacks.
+	Called when the game starts.
+]]
 function on_game_start()
-	RegisterScriptCallback("on_key_press", on_key_press)
-	RegisterScriptCallback("on_key_release", on_key_release)
 	if ui_mcm then
 		RegisterScriptCallback("on_option_change", on_option_change)
 		on_option_change()

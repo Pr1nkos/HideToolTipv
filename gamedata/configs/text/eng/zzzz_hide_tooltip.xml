@@ -1,31 +1,25 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <string_table>
-	<!-- Menu name in MCM -->
 	<string id="ui_mcm_menu_hide_tooltip">
 		<text>!Hide Tooltip</text>
 	</string>
 
-	<!-- Option name for the hide tooltip key -->
 	<string id="ui_mcm_hide_tooltip_key_hide">
 		<text>Hide Tooltip Key</text>
 	</string>
 
-	<!-- Description for the hide tooltip key option -->
 	<string id="ui_mcm_hide_tooltip_key_hide_desc">
 		<text>Hold this key to hide the item tooltip</text>
 	</string>
 
-	<!-- Option name for the modifier key -->
 	<string id="ui_mcm_hide_tooltip_KEY_MODIFIER">
 		<text>Modifier Key</text>
 	</string>
 
-	<!-- Description for the modifier key option -->
 	<string id="ui_mcm_hide_tooltip_key_modifier_desc">
 		<text>Use this key to toggle between modes</text>
 	</string>
 
-	<!-- Modifier key options -->
 	<string id="ui_mcm_lst_hide_tooltip_KEY_MODIFIER_shift">
 		<text>Shift</text>
 	</string>
@@ -36,13 +30,21 @@
 		<text>Alt</text>
 	</string>
 
-	<!-- Option name for enabling tooltip displacement -->
-	<string id="ui_mcm_hide_tooltip_enable_displace_tooltip">
-		<text>Enable Tooltip Displacement</text>
+	<string id="ui_mcm_hide_tooltip_hide_mode">
+		<text>Tooltip Visibility Mode</text>
 	</string>
 
-	<!-- Description for enabling tooltip displacement -->
-	<string id="ui_mcm_hide_tooltip_enable_displace_tooltip_desc">
-		<text>Move the tooltip to the top-left corner</text>
+	<string id="ui_mcm_hide_tooltip_hide_mode_desc">
+		<text>Toggle tooltip visibility mode:
+		- ON: Tooltip is hidden by default, shown only when holding the Hide Tooltip Key.
+		- OFF: Tooltip is shown by default, hidden when holding the Hide Tooltip Key.</text>
+	</string>
+
+	<string id="ui_mcm_hide_tooltip_delay">
+		<text>Tooltip Display Delay</text>
+	</string>
+
+	<string id="ui_mcm_hide_tooltip_delay_desc">
+		<text>Sets the delay (in milliseconds) before the tooltip appears. If set to 0, tooltips will appear instantly.</text>
 	</string>
 </string_table>

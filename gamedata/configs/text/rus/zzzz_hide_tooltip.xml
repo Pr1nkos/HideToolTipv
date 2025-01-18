@@ -1,31 +1,25 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <string_table>
-	<!-- Название меню в MCM -->
 	<string id="ui_mcm_menu_hide_tooltip">
 		<text>!Hide Tooltip</text>
 	</string>
 
-	<!-- Название опции для клавиши скрытия подсказки -->
 	<string id="ui_mcm_hide_tooltip_key_hide">
 		<text>Клавиша скрытия подсказки</text>
 	</string>
 
-	<!-- Описание опции для клавиши скрытия подсказки -->
 	<string id="ui_mcm_hide_tooltip_key_hide_desc">
 		<text>Зажмите клавишу, чтобы скрыть подсказку к предмету</text>
 	</string>
 
-	<!-- Название опции для клавиши-модификатора -->
 	<string id="ui_mcm_hide_tooltip_KEY_MODIFIER">
 		<text>Клавиша-модификатор</text>
 	</string>
 
-	<!-- Описание опции для клавиши-модификатора -->
 	<string id="ui_mcm_hide_tooltip_key_modifier_desc">
 		<text>Используйте модификатор для переключения режима</text>
 	</string>
 
-	<!-- Варианты выбора для клавиши-модификатора -->
 	<string id="ui_mcm_lst_hide_tooltip_KEY_MODIFIER_shift">
 		<text>Shift</text>
 	</string>
@@ -36,13 +30,22 @@
 		<text>Alt</text>
 	</string>
 
-	<!-- Название опции для включения перемещения подсказки -->
-	<string id="ui_mcm_hide_tooltip_enable_displace_tooltip">
-		<text>Перемещение подсказки</text>
+	<string id="ui_mcm_hide_tooltip_hide_mode">
+		<text>Режим видимости подсказки</text>
 	</string>
 
-	<!-- Описание опции для включения перемещения подсказки -->
-	<string id="ui_mcm_hide_tooltip_enable_displace_tooltip_desc">
-		<text>Переместить подсказку в левый верхний угол</text>
+	<string id="ui_mcm_hide_tooltip_hide_mode_desc">
+		<text>Переключение режима видимости подсказки:\n
+		- ВКЛ: Подсказка скрыта по умолчанию, показывается только при удержании клавиши скрытия.\n
+		- ВЫКЛ: Подсказка показана по умолчанию, скрывается при удержании клавиши скрытия.</text>
 	</string>
+
+	<string id="ui_mcm_hide_tooltip_delay">
+		<text>Задержка показа подсказки</text>
+	</string>
+
+	<string id="ui_mcm_hide_tooltip_delay_desc">
+		<text>Устанавливает задержку (в миллисекундах) перед появлением подсказки. Если установить значение 0, подсказки будут появляться моментально.</text>
+	</string>
+
 </string_table>
