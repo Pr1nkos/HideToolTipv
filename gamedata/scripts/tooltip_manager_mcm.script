@@ -1,13 +1,15 @@
+--zzzz_hide_tooltip_mcm.script
 defaults = {
 	key_hide = DIK_keys.DIK_P,
-	modifier = DIK_keys.DIK_LSHIFT,
+	key_modifier = DIK_keys.DIK_LCONTROL,
 	hide_mode = false,
 	delay = 700,
+	show_tooltip_on_click = true,
 }
 
 function get_config(key)
 	if ui_mcm then
-		return ui_mcm.get("hide_tooltip/" .. key)
+		return ui_mcm.get("tooltip_manager/" .. key)
 	else
 		return defaults[key]
 	end
@@ -22,28 +24,28 @@ function on_mcm_load()
 				id = "title",
 				type = "slide",
 				link = "ui_options_slider_player",
-				text = "ui_mcm_menu_hide_tooltip",
 				size = { 512, 50 },
 				spacing = 20,
 			},
 			{ id = "key_hide", type = "key_bind", val = 2, def = defaults.key_hide },
 			{
-				id = "KEY_MODIFIER",
+				id = "key_modifier",
 				type = "radio_h",
 				val = 2,
-				def = defaults.modifier,
+				def = defaults.key_modifier,
 				content = {
-					{ DIK_keys.DIK_LSHIFT, "hide_tooltip_KEY_MODIFIER_shift" },
-					{ DIK_keys.DIK_LCONTROL, "hide_tooltip_KEY_MODIFIER_ctrl" },
-					{ DIK_keys.DIK_LMENU, "hide_tooltip_KEY_MODIFIER_alt" },
+					{ DIK_keys.DIK_LSHIFT, "tooltip_manager_key_modifier_shift" },
+					{ DIK_keys.DIK_LCONTROL, "tooltip_manager_key_modifier_ctrl" },
+					{ DIK_keys.DIK_LMENU, "tooltip_manager_key_modifier_alt" },
 				},
 			},
 			{ id = "divider", type = "line" },
-			{ id = "hide_mode", type = "check", val = 1, def = false },
+			{ id = "hide_mode", type = "check", val = 1, def = defaults.hide_mode },
+			{ id = "show_tooltip_on_click", type = "check", val = 1, def = defaults.show_tooltip_on_click },
 			{
 				id = "delay",
 				type = "track",
-				text = "hide_tooltip_delay", -- Локализованный текст для ползунка
+				text = "tooltip_manager_delay",
 				val = 2,
 				min = 0,
 				max = 2000,

@@ -12,7 +12,7 @@
 		<text>Зажмите клавишу, чтобы скрыть подсказку к предмету</text>
 	</string>
 
-	<string id="ui_mcm_hide_tooltip_KEY_MODIFIER">
+	<string id="ui_mcm_hide_tooltip_key_modifier">
 		<text>Клавиша-модификатор</text>
 	</string>
 
@@ -20,13 +20,13 @@
 		<text>Используйте модификатор для переключения режима</text>
 	</string>
 
-	<string id="ui_mcm_lst_hide_tooltip_KEY_MODIFIER_shift">
+	<string id="ui_mcm_lst_hide_tooltip_key_modifier_shift">
 		<text>Shift</text>
 	</string>
-	<string id="ui_mcm_lst_hide_tooltip_KEY_MODIFIER_ctrl">
+	<string id="ui_mcm_lst_hide_tooltip_key_modifier_ctrl">
 		<text>Ctrl</text>
 	</string>
-	<string id="ui_mcm_lst_hide_tooltip_KEY_MODIFIER_alt">
+	<string id="ui_mcm_lst_hide_tooltip_key_modifier_alt">
 		<text>Alt</text>
 	</string>
 
@@ -46,6 +46,14 @@
 
 	<string id="ui_mcm_hide_tooltip_delay_desc">
 		<text>Устанавливает задержку (в миллисекундах) перед появлением подсказки. Если установить значение 0, подсказки будут появляться моментально.</text>
+	</string>
+
+	<string id="ui_mcm_hide_tooltip_show_tooltip_on_click">
+		<text>Показывать подсказку при клике</text>
+	</string>
+
+	<string id="ui_mcm_hide_tooltip_show_tooltip_on_click_desc">
+		<text>Если включено, подсказка будет отображаться при клике мышью, даже если режим скрытия подсказок активен. Это полезно, если вы хотите временно увидеть подсказку, не отключая полностью режим скрытия.</text>
 	</string>
 
 </string_table>

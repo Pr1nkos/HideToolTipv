@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <string_table>
-	<string id="ui_mcm_menu_hide_tooltip">
+	<string id="ui_mcm_menu_tooltip_manager">
 		<text>!Hide Tooltip</text>
 	</string>
 
@@ -12,7 +12,7 @@
 		<text>Hold this key to hide the item tooltip</text>
 	</string>
 
-	<string id="ui_mcm_hide_tooltip_KEY_MODIFIER">
+	<string id="ui_mcm_hide_tooltip_key_modifier">
 		<text>Modifier Key</text>
 	</string>
 
@@ -20,13 +20,13 @@
 		<text>Use this key to toggle between modes</text>
 	</string>
 
-	<string id="ui_mcm_lst_hide_tooltip_KEY_MODIFIER_shift">
+	<string id="ui_mcm_lst_hide_tooltip_key_modifier_shift">
 		<text>Shift</text>
 	</string>
-	<string id="ui_mcm_lst_hide_tooltip_KEY_MODIFIER_ctrl">
+	<string id="ui_mcm_lst_hide_tooltip_key_modifier_ctrl">
 		<text>Ctrl</text>
 	</string>
-	<string id="ui_mcm_lst_hide_tooltip_KEY_MODIFIER_alt">
+	<string id="ui_mcm_lst_hide_tooltip_key_modifier_alt">
 		<text>Alt</text>
 	</string>
 
@@ -46,5 +46,13 @@
 
 	<string id="ui_mcm_hide_tooltip_delay_desc">
 		<text>Sets the delay (in milliseconds) before the tooltip appears. If set to 0, tooltips will appear instantly.</text>
+	</string>
+
+	<string id="ui_mcm_hide_tooltip_show_tooltip_on_click">
+		<text>Show Tooltip on Click</text>
+	</string>
+
+	<string id="ui_mcm_hide_tooltip_show_tooltip_on_click_desc">
+		<text>If enabled, the tooltip will be displayed when clicking the mouse, even if the hide mode is active. This is useful if you want to temporarily view the tooltip without completely disabling the hide mode.</text>
 	</string>
 </string_table>
