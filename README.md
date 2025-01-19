@@ -1,6 +1,6 @@
 
 # 🛠 **Tooltip Manager**  
-**Версия:** 2.1.0  
+**Версия:** 2.1.2  
 **Автор:** Pr1nkos
 
 ---
@@ -28,36 +28,64 @@ The mod integrates with the Mod Configuration Menu (MCM), making it easy to cust
 ---
 
 ## 🚀 **Основные функции**  
-- **Режим скрытия подсказок:**  
-  - Переключение режима скрытия с помощью комбинации клавиш (например, `Shift + P`).  
-  - Подсказки могут быть скрыты по умолчанию и показываться только при удержании клавиши.  
+1. **Два режима работы:**  
+   - **Режим 1:** Подсказки скрыты по умолчанию и отображаются только при удержании специальной клавиши.  
+   - **Режим 2:** Подсказки отображаются по умолчанию и скрываются при удержании клавиши.  
 
-- **Задержка отображения:**  
-  - Настройка задержки (в миллисекундах) перед появлением подсказки.  
+2. **Поддержка Gamma:**  
+   Мод автоматически определяет наличие кастомных методов (например, `Ishy_OnKeyboard`), используемых в сборке Gamma, и адаптируется под них, обеспечивая полную совместимость.  
 
-- **Позиционирование подсказок:**  
-  - Подсказки автоматически появляются рядом с курсором.  
-  - Логика корректировки позиции, чтобы подсказки не выходили за границы экрана.  
+3. **Фиксирование положения подсказки:**  
+   Подсказки автоматически корректируют свою позицию, чтобы оставаться в пределах экрана, даже если курсор находится близко к краю. Это предотвращает исчезновение подсказки за границами экрана.  
 
-- **Поддержка интерфейсов:**  
-  - Работает в инвентаре, мастерской (ремонт, крафт, улучшение) и других интерфейсах.  
+4. **Удобное переключение режимов:**  
+   Переключение между режимами осуществляется с помощью комбинации клавиш (модификатор + клавиша скрытия), что делает процесс интуитивно понятным и быстрым.  
+
+5. **Гибкая настройка через MCM:**  
+   Все параметры мода, включая клавиши, режимы, задержки и дополнительные опции, настраиваются через Mod Configuration Menu (MCM), что делает мод удобным для пользователя.  
+
+6. **Настройка времени показа подсказок:**  
+   Пользователь может задать задержку перед появлением подсказки (в миллисекундах). Также доступна опция мгновенного показа (instatooltip), что полезно для быстрого взаимодействия с интерфейсом.  
+
+7. **Поддержка всех интерфейсов игры:**  
+   Мод работает во всех ключевых интерфейсах игры, включая инвентарь, крафтинг, ремонт, улучшение предметов, лутание мутантов и другие, обеспечивая единообразие поведения подсказок.  
+
+8. **Временный показ подсказки по клику мыши:**  
+   Даже в режиме скрытия подсказка временно отображается при клике мыши, что позволяет быстро получить информацию без отключения основного режима.  
+
+9. **Совместимость и безопасность:**  
+   Методы мода реализованы через **override**, что позволяет интегрировать его в игру, не перетирая оригинальные функции. Это обеспечивает совместимость с другими модами
 
 ---
 
 ## 🚀 **Key Features (English)**  
-- **Tooltip Hide Mode:**  
-  - Toggle hide mode using a key combination (e.g., `Shift + P`).  
-  - Tooltips can be hidden by default and shown only when holding a key.  
+1. **Two Operating Modes:**  
+   - **Mode 1:** Tooltips are hidden by default and appear only when a specific key is held.  
+   - **Mode 2:** Tooltips are shown by default and hidden when a key is held.  
 
-- **Display Delay:**  
-  - Configure the delay (in milliseconds) before tooltips appear.  
+2. **Support for GAMMA:**  
+   The mod automatically detects the presence of custom methods (e.g., `Ishy_OnKeyboard`) used in the Gamma modpack and adapts to them, ensuring full compatibility.  
 
-- **Tooltip Positioning:**  
-  - Tooltips automatically appear near the cursor.  
-  - Logic to adjust position so tooltips stay within screen bounds.  
+3. **Tooltip Position Fixing:**  
+   Tooltips automatically adjust their position to stay within the screen boundaries, even if the cursor is near the edge. This prevents tooltips from disappearing off-screen.  
 
-- **Interface Support:**  
-  - Works in inventory, workshop (repair, crafting, upgrading), and other interfaces.  
+4. **Convenient Mode Switching:**  
+   Switching between modes is done using a key combination (modifier + hide key), making the process intuitive and quick.  
+
+5. **Flexible Configuration via MCM:**  
+   All mod parameters, including keys, modes, delays, and additional options, are configurable through the Mod Configuration Menu (MCM), making the mod user-friendly.  
+
+6. **Tooltip Display Time Settings:**  
+   Users can set a delay (in milliseconds) before tooltips appear. An instant display option (instatooltip) is also available, which is particularly useful for quick interface interactions.  
+
+7. **Support for All Game Interfaces:**  
+   The mod works in all key game interfaces, including inventory, crafting, repair, item upgrades, mutant looting, and more, ensuring consistent tooltip behavior.  
+
+8. **Temporary Tooltip Display on Mouse Click:**  
+   Even in hide mode, the tooltip is temporarily displayed when clicking the mouse, allowing quick access to information without disabling the main mode.  
+
+9. **Compatibility and Safety:**  
+   The mod's methods are implemented via **override**, allowing it to integrate into the game without overwriting original functions. This ensures compatibility with other mods
 
 ---
 
