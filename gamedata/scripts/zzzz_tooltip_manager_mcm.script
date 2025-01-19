@@ -17,7 +17,7 @@ end
 
 function on_mcm_load()
 	local op = {
-		id = "hide_tooltip",
+		id = "tooltip_manager",
 		sh = true,
 		gr = {
 			{

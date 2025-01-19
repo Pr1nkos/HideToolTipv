@@ -1,58 +1,58 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <string_table>
-	<string id="ui_mcm_menu_hide_tooltip">
-		<text>!Hide Tooltip</text>
+	<string id="ui_mcm_menu_tooltip_manager">
+		<text>!Tooltip Manager</text>
 	</string>
 
-	<string id="ui_mcm_hide_tooltip_key_hide">
+	<string id="ui_mcm_tooltip_manager_key_hide">
 		<text>Клавиша скрытия подсказки</text>
 	</string>
 
-	<string id="ui_mcm_hide_tooltip_key_hide_desc">
+	<string id="ui_mcm_tooltip_manager_key_hide_desc">
 		<text>Зажмите клавишу, чтобы скрыть подсказку к предмету</text>
 	</string>
 
-	<string id="ui_mcm_hide_tooltip_key_modifier">
+	<string id="ui_mcm_tooltip_manager_key_modifier">
 		<text>Клавиша-модификатор</text>
 	</string>
 
-	<string id="ui_mcm_hide_tooltip_key_modifier_desc">
+	<string id="ui_mcm_tooltip_manager_key_modifier_desc">
 		<text>Используйте модификатор для переключения режима</text>
 	</string>
 
-	<string id="ui_mcm_lst_hide_tooltip_key_modifier_shift">
+	<string id="ui_mcm_lst_tooltip_manager_key_modifier_shift">
 		<text>Shift</text>
 	</string>
-	<string id="ui_mcm_lst_hide_tooltip_key_modifier_ctrl">
+	<string id="ui_mcm_lst_tooltip_manager_key_modifier_ctrl">
 		<text>Ctrl</text>
 	</string>
-	<string id="ui_mcm_lst_hide_tooltip_key_modifier_alt">
+	<string id="ui_mcm_lst_tooltip_manager_key_modifier_alt">
 		<text>Alt</text>
 	</string>
 
-	<string id="ui_mcm_hide_tooltip_hide_mode">
+	<string id="ui_mcm_tooltip_manager_hide_mode">
 		<text>Режим видимости подсказки</text>
 	</string>
 
-	<string id="ui_mcm_hide_tooltip_hide_mode_desc">
+	<string id="ui_mcm_tooltip_manager_hide_mode_desc">
 		<text>Переключение режима видимости подсказки:\n
 		- ВКЛ: Подсказка скрыта по умолчанию, показывается только при удержании клавиши скрытия.\n
 		- ВЫКЛ: Подсказка показана по умолчанию, скрывается при удержании клавиши скрытия.</text>
 	</string>
 
-	<string id="ui_mcm_hide_tooltip_delay">
+	<string id="ui_mcm_tooltip_manager_delay">
 		<text>Задержка показа подсказки</text>
 	</string>
 
-	<string id="ui_mcm_hide_tooltip_delay_desc">
+	<string id="ui_mcm_tooltip_manager_delay_desc">
 		<text>Устанавливает задержку (в миллисекундах) перед появлением подсказки. Если установить значение 0, подсказки будут появляться моментально.</text>
 	</string>
 
-	<string id="ui_mcm_hide_tooltip_show_tooltip_on_click">
+	<string id="ui_mcm_tooltip_manager_show_tooltip_on_click">
 		<text>Показывать подсказку при клике</text>
 	</string>
 
-	<string id="ui_mcm_hide_tooltip_show_tooltip_on_click_desc">
+	<string id="ui_mcm_tooltip_manager_show_tooltip_on_click_desc">
 		<text>Если включено, подсказка будет отображаться при клике мышью, даже если режим скрытия подсказок активен. Это полезно, если вы хотите временно увидеть подсказку, не отключая полностью режим скрытия.</text>
 	</string>
 

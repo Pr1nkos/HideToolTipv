@@ -1,4 +1,4 @@
---zzzz_hide_tooltip.script
+--tooltip_manager.script
 
 -- Local variables
 local hide_mode = nil
@@ -242,13 +242,19 @@ function utils_ui.UIInfoItem:Update(obj, sec, flags)
 	-- Call the original Update method
 	original_methods.Update(self, obj, sec, flags)
 	-- Apply delay if specified
-	self.delay = delay
+	if hide_mode then
+		self.delay = 0
+	else
+		self.delay = delay
+	end
+
 	-- Show or hide the dialog based on hide mode and key states
 	if not obj or self.id ~= obj:id() then
 		mouse_clicked = false
 	end
 
 	if mouse_clicked and SHOW_TOOLTIP_ON_CLICK then
+		self.delay = 0
 		self.dialog:Show(true)
 	elseif hide_mode then
 		self.dialog:Show(holding_key_hide)
@@ -310,6 +316,7 @@ end
 ]]
 function on_game_start()
 	initialize_mutant_loot_method()
+	on_option_change()
 	if ui_mcm then
 		RegisterScriptCallback("on_option_change", on_option_change)
 		on_option_change()
