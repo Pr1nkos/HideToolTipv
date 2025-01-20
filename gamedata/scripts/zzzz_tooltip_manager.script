@@ -1,6 +1,5 @@
 --tooltip_manager.script
 
--- Local variables
 local hide_mode = nil
 local KEY_HIDE = nil
 local KEY_MODIFIER = nil
@@ -10,11 +9,9 @@ local holding_key_mod = false
 local delay = nil
 local mouse_clicked = false
 
--- Constants for keyboard events
 local KEY_PRESSED = ui_events.WINDOW_KEY_PRESSED
 local KEY_RELEASED = ui_events.WINDOW_KEY_RELEASED
 
--- Store original methods to preserve functionality
 local original_methods = {
 	Update = utils_ui.UIInfoItem.Update,
 	OnKeyboard = {
@@ -22,43 +19,19 @@ local original_methods = {
 		WorkshopRepair = ui_workshop.UIWorkshopRepair.OnKeyboard,
 		WorkshopCraft = ui_workshop.UIWorkshopCraft.OnKeyboard,
 		WorkshopUpgrade = ui_workshop.UIWorkshopUpgrade.OnKeyboard,
-		MutantLoot = nil,
+		MutantLoot = ish_ui_mutant_loot.Ishy_OnKeyboard,
 		Cook = item_cooking.UICook.OnKeyboard,
 		Recipe = item_recipe.UIRecipe.OnKeyboard,
 	},
 	OnLeftMouseButtonClick = ui_inventory.UIInventory.On_CC_Mouse1,
 }
 
---[[
-	Initializes the MutantLoot OnKeyboard method dynamically.
-	Checks if the custom Ishy_OnKeyboard function exists (for GAMMA), otherwise falls back to the default method.
-]]
-local function initialize_mutant_loot_method()
-	local status, result = pcall(function()
-		return ish_ui_mutant_loot.Ishy_OnKeyboard
-	end)
-	if status and type(result) == "function" then
-		original_methods.OnKeyboard.MutantLoot = ish_ui_mutant_loot.Ishy_OnKeyboard
-	else
-		original_methods.OnKeyboard.MutantLoot = ui_mutant_loot.UIMutantLoot.OnKeyboard
-	end
-end
-
---[[
-	Toggles the hide mode state.
-	Switches `hide_mode` between true and false, and resets key holding states.
-]]
 function toggle_hide_mode()
 	hide_mode = not hide_mode
 	holding_key_hide = false
 	holding_key_mod = false
 end
 
---[[
-	Handles keyboard input to manage hide mode.
-	@param dik: The key code of the pressed/released key.
-	@param keyboard_action: The type of keyboard event (KEY_PRESSED or KEY_RELEASED).
-]]
 function handle_keyboard_input(dik, keyboard_action)
 	if keyboard_action == KEY_PRESSED then
 		if dik == KEY_MODIFIER then
@@ -78,114 +51,45 @@ function handle_keyboard_input(dik, keyboard_action)
 	end
 end
 
---[[
-	Overrides the OnKeyboard method for UIInventory.
-	Calls `handle_keyboard_input` to process custom input, then invokes the original method.
-]]
 function ui_inventory.UIInventory:OnKeyboard(dik, keyboard_action)
 	handle_keyboard_input(dik, keyboard_action)
 	return original_methods.OnKeyboard.Inventory(self, dik, keyboard_action)
 end
 
---[[
-	Overrides the OnKeyboard method for UIWorkshopRepair.
-	Calls `handle_keyboard_input` to process custom input, then invokes the original method.
-]]
 function ui_workshop.UIWorkshopRepair:OnKeyboard(dik, keyboard_action)
 	handle_keyboard_input(dik, keyboard_action)
 	return original_methods.OnKeyboard.WorkshopRepair(self, dik, keyboard_action)
 end
 
---[[
-	Overrides the OnKeyboard method for UIWorkshopCraft.
-	Calls `handle_keyboard_input` to process custom input, then invokes the original method.
-]]
 function ui_workshop.UIWorkshopCraft:OnKeyboard(dik, keyboard_action)
 	handle_keyboard_input(dik, keyboard_action)
 	return original_methods.OnKeyboard.WorkshopCraft(self, dik, keyboard_action)
 end
 
---[[
-	Overrides the OnKeyboard method for UIWorkshopUpgrade.
-	Calls `handle_keyboard_input` to process custom input, then invokes the original method.
-]]
 function ui_workshop.UIWorkshopUpgrade:OnKeyboard(dik, keyboard_action)
 	handle_keyboard_input(dik, keyboard_action)
 	return original_methods.OnKeyboard.WorkshopUpgrade(self, dik, keyboard_action)
 end
 
---[[
-	Overrides the OnKeyboard method for UIMutantLoot.
-	Calls `handle_keyboard_input` to process custom input.
-	Handles specific key events (e.g., Enter to loot all, Escape to close).
-]]
-function ui_mutant_loot.UIMutantLoot:OnKeyboard(dik, keyboard_action)
-	handle_keyboard_input(dik, keyboard_action)
-
-	if keyboard_action == KEY_PRESSED and dik == KEY_HIDE and holding_key_mod then
-		return true
-	end
-
-	if hide_mode then
-		return true
-	end
-
-	if keyboard_action == KEY_PRESSED and dik == DIK_keys.DIK_RETURN then
-		self:OnButton_LootAll()
-		return true
-	end
-
-	if keyboard_action == KEY_PRESSED and dik == DIK_keys.DIK_ESCAPE then
-		self:Close()
-		return true
-	end
-
-	return false
-end
-
---[[
-	Overrides the custom Ishy_OnKeyboard method for MutantLoot.
-	Calls `handle_keyboard_input` to process custom input.
-	Handles specific key events (e.g., Enter to loot all, Escape to close).
-]]
 function ish_ui_mutant_loot.Ishy_OnKeyboard(sender, dik, keyboard_action)
 	handle_keyboard_input(dik, keyboard_action)
 
-	if keyboard_action == KEY_PRESSED and dik == KEY_HIDE and holding_key_mod then
+	if keyboard_action == KEY_PRESSED and dik == KEY_HIDE then
 		return true
 	end
 
-	if hide_mode then
+	if keyboard_action == KEY_RELEASED and dik == KEY_HIDE then
 		return true
 	end
 
-	if keyboard_action == KEY_PRESSED and dik == DIK_keys.DIK_RETURN then
-		sender:OnButton_LootAll()
-		return true
-	end
-
-	if keyboard_action == KEY_PRESSED and dik == DIK_keys.DIK_ESCAPE then
-		sender:Close()
-		return true
-	end
-
-	return false
+	return original_methods.OnKeyboard.MutantLoot(sender, dik, keyboard_action)
 end
 
---[[
-	Overrides the OnKeyboard method for UICook.
-	Calls `handle_keyboard_input` to process custom input, then invokes the original method.
-]]
 function item_cooking.UICook:OnKeyboard(dik, keyboard_action)
 	handle_keyboard_input(dik, keyboard_action)
 	return original_methods.OnKeyboard.Cook(self, dik, keyboard_action)
 end
 
---[[
-	Overrides the OnKeyboard method for UIRecipe.
-	Calls `handle_keyboard_input` to process custom input.
-	Handles specific key events (e.g., Escape to close).
-]]
 function item_recipe.UIRecipe:OnKeyboard(dik, keyboard_action)
 	handle_keyboard_input(dik, keyboard_action)
 
@@ -193,23 +97,9 @@ function item_recipe.UIRecipe:OnKeyboard(dik, keyboard_action)
 		return true
 	end
 
-	if keyboard_action == KEY_PRESSED and dik == DIK_keys.DIK_ESCAPE then
-		self:Close()
-		return true
-	end
-
-	if hide_mode then
-		return true
-	end
-
-	return false
+	return original_methods.OnKeyboard.Recipe(self, dik, keyboard_action)
 end
 
---[[
-	Overrides the OnKeyboard method for UIItemSheet.
-	Calls `handle_keyboard_input` to process custom input.
-	Handles specific key events (e.g., Escape to close).
-]]
 function ui_itm_details.UIItemSheet:OnKeyboard(dik, keyboard_action)
 	handle_keyboard_input(dik, keyboard_action)
 
@@ -221,10 +111,6 @@ function ui_itm_details.UIItemSheet:OnKeyboard(dik, keyboard_action)
 	return false
 end
 
---[[
-	Overrides the On_CC_Mouse1 method for UIInventory.
-	Sets `mouse_clicked` to true if hide mode is active, then invokes the original method.
-]]
 function ui_inventory.UIInventory:On_CC_Mouse1(bag, idx)
 	if hide_mode then
 		mouse_clicked = true
@@ -232,23 +118,14 @@ function ui_inventory.UIInventory:On_CC_Mouse1(bag, idx)
 	original_methods.OnLeftMouseButtonClick(self, bag, idx)
 end
 
---[[
-	Updates the UI element (e.g., tooltip) based on hide mode and cursor position.
-	@param obj: The object being updated.
-	@param sec: The time in seconds since the last update.
-	@param flags: Additional flags for the update.
-]]
 function utils_ui.UIInfoItem:Update(obj, sec, flags)
-	-- Call the original Update method
 	original_methods.Update(self, obj, sec, flags)
-	-- Apply delay if specified
 	if hide_mode then
-		self.delay = 0
+		self.delay = 50
 	else
 		self.delay = delay
 	end
 
-	-- Show or hide the dialog based on hide mode and key states
 	if not obj or self.id ~= obj:id() then
 		mouse_clicked = false
 	end
@@ -262,20 +139,17 @@ function utils_ui.UIInfoItem:Update(obj, sec, flags)
 		self.dialog:Show(not holding_key_hide)
 	end
 
-	-- Exit if the object does not pass the update check
 	if not self:Pass(obj, sec) then
 		self:Show(false)
 		return
 	end
 
-	-- Calculate tooltip position relative to the cursor
 	local screen_width, screen_height = 1024, 768
 	local cursor_position = GetCursorPosition()
 	local tooltip_width = self.frame:GetWidth() or self.dialog.GetWidth()
 	local tooltip_height = self.frame:GetHeight() or self.dialog.GetHeight()
 	local tooltip_position = vector2():set(cursor_position.x + 20, cursor_position.y + 20)
 
-	-- Adjust tooltip position to ensure it stays within screen bounds
 	if tooltip_position.x + tooltip_width > screen_width then
 		tooltip_position.x = screen_width - tooltip_width
 		tooltip_position.y = cursor_position.y + 20
@@ -294,14 +168,9 @@ function utils_ui.UIInfoItem:Update(obj, sec, flags)
 		tooltip_position.x = cursor_position.x + 20
 	end
 
-	-- Set the tooltip position
 	self.dialog:SetWndPos(tooltip_position)
 end
 
---[[
-	Updates settings from the Mod Configuration Menu (MCM).
-	Called when options are changed in the MCM.
-]]
 function on_option_change()
 	KEY_HIDE = ui_mcm.get("tooltip_manager/key_hide")
 	KEY_MODIFIER = ui_mcm.get("tooltip_manager/key_modifier")
@@ -310,12 +179,7 @@ function on_option_change()
 	SHOW_TOOLTIP_ON_CLICK = ui_mcm.get("tooltip_manager/show_tooltip_on_click")
 end
 
---[[
-	Initializes the script and registers callbacks.
-	Called when the game starts.
-]]
 function on_game_start()
-	initialize_mutant_loot_method()
 	on_option_change()
 	if ui_mcm then
 		RegisterScriptCallback("on_option_change", on_option_change)
