@@ -126,12 +126,11 @@ function utils_ui.UIInfoItem:Update(obj, sec, flags)
 		self.delay = delay
 	end
 
-	if not obj or self.id ~= obj:id() then
+	if not obj then
 		mouse_clicked = false
 	end
 
 	if mouse_clicked and SHOW_TOOLTIP_ON_CLICK then
-		self.delay = 0
 		self.dialog:Show(true)
 	elseif hide_mode then
 		self.dialog:Show(holding_key_hide)
